@@ -1,0 +1,52 @@
+@import "tailwindcss";
+
+:root {
+  --background: #f0eadc;
+  --foreground: #1e261d;
+  --canvas: #ebe3d1;
+  --surface: #fcfaf6;
+  --ink: #1f281e;
+  --muted: #6c7564;
+  --line: rgba(72, 88, 63, 0.14);
+  --line-strong: rgba(72, 88, 63, 0.28);
+  --accent: #3d6d43;
+  --accent-soft: rgba(61, 109, 67, 0.18);
+  --accent-contrast: #f8f3e8;
+  --ember: #8a442b;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-space-grotesk);
+  --font-mono: var(--font-ibm-plex-mono);
+}
+
+body {
+  background: var(--background);
+  color: var(--ink);
+  font-family: var(--font-space-grotesk), sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+::selection {
+  background: rgba(61, 109, 67, 0.18);
+}
+
+@keyframes riseIn {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-rise {
+  animation: riseIn 0.55s ease both;
+}

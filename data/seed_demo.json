@@ -1,0 +1,36 @@
+{
+  "fazendas": [
+    { "nome": "Fazenda Sao Jose" },
+    { "nome": "Fazenda Boa Esperanca" }
+  ],
+  "talhoes": [
+    { "fazenda": "Fazenda Sao Jose", "codigo": "T01", "nome": "Baixada Norte", "area_hectares": 12.5, "localizacao_descricao": "Setor proximo a estrada principal" },
+    { "fazenda": "Fazenda Sao Jose", "codigo": "T02", "nome": "Ponte Alta", "area_hectares": 14.2, "localizacao_descricao": "Faixa de transicao do solo" },
+    { "fazenda": "Fazenda Sao Jose", "codigo": "T03", "nome": "Colina 1", "area_hectares": 11.8, "localizacao_descricao": "Area mais seca do bloco sul" },
+    { "fazenda": "Fazenda Sao Jose", "codigo": "T04", "nome": "Colina 2", "area_hectares": 15.1, "localizacao_descricao": "Trecho com maior declive" },
+    { "fazenda": "Fazenda Sao Jose", "codigo": "T05", "nome": "Vale Verde", "area_hectares": 13.4, "localizacao_descricao": "Regiao com irrigacao complementar" },
+    { "fazenda": "Fazenda Sao Jose", "codigo": "T06", "nome": "Retiro", "area_hectares": 16.3, "localizacao_descricao": "Talhao de acesso mais longo" },
+    { "fazenda": "Fazenda Sao Jose", "codigo": "T07", "nome": "Curva Leste", "area_hectares": 10.7, "localizacao_descricao": "Borda com maior incidencia de vento" },
+    { "fazenda": "Fazenda Sao Jose", "codigo": "T08", "nome": "Matinha", "area_hectares": 17.0, "localizacao_descricao": "Setor perto da reserva interna" },
+    { "fazenda": "Fazenda Sao Jose", "codigo": "T09", "nome": "Patamar", "area_hectares": 18.1, "localizacao_descricao": "Bloco de maior area continua" },
+    { "fazenda": "Fazenda Sao Jose", "codigo": "T10", "nome": "Cedro", "area_hectares": 12.9, "localizacao_descricao": "Faixa sombreada no extremo oeste" },
+    { "fazenda": "Fazenda Boa Esperanca", "codigo": "T01", "nome": "Aurora", "area_hectares": 11.3, "localizacao_descricao": "Area plana na entrada da fazenda" },
+    { "fazenda": "Fazenda Boa Esperanca", "codigo": "T02", "nome": "Horizonte", "area_hectares": 14.8, "localizacao_descricao": "Faixa com historico estavel de corte" },
+    { "fazenda": "Fazenda Boa Esperanca", "codigo": "T03", "nome": "Lago Azul", "area_hectares": 12.1, "localizacao_descricao": "Setor proximo ao reservatorio" },
+    { "fazenda": "Fazenda Boa Esperanca", "codigo": "T04", "nome": "Paineira", "area_hectares": 19.2, "localizacao_descricao": "Maior talhao da fazenda" },
+    { "fazenda": "Fazenda Boa Esperanca", "codigo": "T05", "nome": "Morro Alto", "area_hectares": 13.0, "localizacao_descricao": "Area com maior compactacao do solo" },
+    { "fazenda": "Fazenda Boa Esperanca", "codigo": "T06", "nome": "Campo Novo", "area_hectares": 15.6, "localizacao_descricao": "Bloco implantado na ultima renovacao" },
+    { "fazenda": "Fazenda Boa Esperanca", "codigo": "T07", "nome": "Pedra Branca", "area_hectares": 10.9, "localizacao_descricao": "Trecho mais pedregoso" },
+    { "fazenda": "Fazenda Boa Esperanca", "codigo": "T08", "nome": "Estrela", "area_hectares": 16.4, "localizacao_descricao": "Faixa central da propriedade" },
+    { "fazenda": "Fazenda Boa Esperanca", "codigo": "T09", "nome": "Serra Baixa", "area_hectares": 17.3, "localizacao_descricao": "Setor com colheita mais lenta" },
+    { "fazenda": "Fazenda Boa Esperanca", "codigo": "T10", "nome": "Jatoba", "area_hectares": 12.7, "localizacao_descricao": "Borda norte com estrada interna" }
+  ],
+  "registros_colheita": [
+    { "fazenda": "Fazenda Sao Jose", "talhao_codigo": "T02", "safra": "2025/2026", "data_fechamento": "2026-04-03", "tipo_colheita": "mecanizada", "producao_prevista_ton": 1450, "producao_real_ton": 1310, "perda_ton": 140, "perda_percentual": 9.66, "equipe_responsavel": "Equipe Alfa" },
+    { "fazenda": "Fazenda Sao Jose", "talhao_codigo": "T05", "safra": "2025/2026", "data_fechamento": "2026-04-07", "tipo_colheita": "semimecanizada", "producao_prevista_ton": 1210, "producao_real_ton": 1150, "perda_ton": 60, "perda_percentual": 4.96, "equipe_responsavel": "Equipe Beta" },
+    { "fazenda": "Fazenda Sao Jose", "talhao_codigo": "T09", "safra": "2025/2026", "data_fechamento": "2026-04-09", "tipo_colheita": "mecanizada", "producao_prevista_ton": 1680, "producao_real_ton": 1490, "perda_ton": 190, "perda_percentual": 11.31, "equipe_responsavel": "Equipe Gama" },
+    { "fazenda": "Fazenda Boa Esperanca", "talhao_codigo": "T01", "safra": "2025/2026", "data_fechamento": "2026-04-10", "tipo_colheita": "manual", "producao_prevista_ton": 980, "producao_real_ton": 940, "perda_ton": 40, "perda_percentual": 4.08, "equipe_responsavel": "Equipe Delta" },
+    { "fazenda": "Fazenda Boa Esperanca", "talhao_codigo": "T04", "safra": "2025/2026", "data_fechamento": "2026-04-12", "tipo_colheita": "mecanizada", "producao_prevista_ton": 1540, "producao_real_ton": 1435, "perda_ton": 105, "perda_percentual": 6.82, "equipe_responsavel": "Equipe Epsilon" },
+    { "fazenda": "Fazenda Boa Esperanca", "talhao_codigo": "T07", "safra": "2025/2026", "data_fechamento": "2026-04-14", "tipo_colheita": "semimecanizada", "producao_prevista_ton": 1110, "producao_real_ton": 1010, "perda_ton": 100, "perda_percentual": 9.01, "equipe_responsavel": "Equipe Zeta" }
+  ]
+}
