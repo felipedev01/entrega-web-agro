@@ -17,7 +17,7 @@ export class ApiError extends Error {
 
 function ensureApiBaseUrl() {
   if (!apiBaseUrl) {
-    throw new ApiError("NEXT_PUBLIC_API_BASE_URL nao foi configurada.");
+    throw new ApiError("A conexao de dados nao esta disponivel neste ambiente.");
   }
   return apiBaseUrl;
 }
@@ -45,18 +45,18 @@ async function request<T>(path: string, init?: RequestInit, searchParams?: URLSe
       cache: "no-store",
     });
   } catch {
-    throw new ApiError("Nao foi possivel alcancar a API. Verifique o tunnel e o backend.");
+    throw new ApiError("Nao foi possivel conectar aos servicos da operacao agora.");
   }
 
   if (!response.ok) {
     try {
       const payload = (await response.json()) as { detail?: string };
-      throw new ApiError(payload.detail ?? "A API retornou um erro inesperado.");
+      throw new ApiError(payload.detail ?? "Nao foi possivel concluir a solicitacao.");
     } catch (error) {
       if (error instanceof ApiError) {
         throw error;
       }
-      throw new ApiError("A API retornou um erro inesperado.");
+      throw new ApiError("Nao foi possivel concluir a solicitacao.");
     }
   }
 

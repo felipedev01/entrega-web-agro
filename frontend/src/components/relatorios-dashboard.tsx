@@ -16,8 +16,14 @@ import type { Fazenda, RelatorioEntidade, RelatorioSafra, Talhao } from "@/lib/t
 
 import { Panel, secondaryButtonClassName, StatCard, StatusCallout } from "./ui";
 
+const initialSafra = "2025/2026";
+
 export function RelatoriosDashboard() {
-  const [safra, setSafra] = useState("2025/2026");
+  const safraInputId = "relatorios-safra";
+  const fazendaSelectId = "relatorios-fazenda";
+  const talhaoSelectId = "relatorios-talhao";
+  const [safraInput, setSafraInput] = useState(initialSafra);
+  const [appliedSafra, setAppliedSafra] = useState(initialSafra);
   const [fazendas, setFazendas] = useState<Fazenda[]>([]);
   const [talhoes, setTalhoes] = useState<Talhao[]>([]);
   const [fazendaId, setFazendaId] = useState("");
@@ -59,7 +65,9 @@ export function RelatoriosDashboard() {
         return;
       }
       setError(null);
-      await loadReports(safra);
+      setFarmReport(null);
+      setPlotReport(null);
+      await loadReports(initialSafra);
     }
 
     void bootstrap();
@@ -67,89 +75,95 @@ export function RelatoriosDashboard() {
     return () => {
       active = false;
     };
-  }, [safra]);
+  }, []);
 
   function handleConsultar() {
     setError(null);
+    const nextSafra = safraInput.trim() || "2025/2026";
+    setAppliedSafra(nextSafra);
     void loadReports(
-      safra,
+      nextSafra,
       fazendaId ? Number(fazendaId) : undefined,
       talhaoId ? Number(talhaoId) : undefined,
     );
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-5">
       <Panel
-        title="Consolidacao da safra"
-        eyebrow="Relatorios"
+        title="Leitura consolidada da safra"
+        eyebrow="Centro de insights"
         actions={
           <div className="flex flex-wrap items-center gap-2">
+            <label htmlFor={safraInputId} className="sr-only">
+              Safra do relatorio
+            </label>
             <input
-              value={safra}
-              onChange={(event) => setSafra(event.target.value)}
+              id={safraInputId}
+              value={safraInput}
+              onChange={(event) => setSafraInput(event.target.value)}
               className="rounded-full border border-[color:var(--line)] bg-white/70 px-4 py-2 text-sm outline-none"
             />
             <button className={secondaryButtonClassName} type="button" onClick={handleConsultar}>
-              Atualizar relatorios
+              Atualizar leitura
             </button>
           </div>
         }
       >
         {error ? <StatusCallout tone="error" message={error} /> : null}
 
-        <div className="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-          <StatCard label="Registros" value={String(report?.total_registros ?? 0)} helper="Fechamentos encontrados" />
+        <div className="mt-5 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+          <StatCard label="Apontamentos" value={String(report?.total_registros ?? 0)} helper="Lancamentos consolidados" />
           <StatCard
             label="Previsto"
             value={formatNumber(report?.total_previsto_ton ?? 0, " ton")}
-            helper="Volume planejado na safra"
+            helper="Volume projetado para a safra"
           />
           <StatCard
             label="Realizado"
             value={formatNumber(report?.total_realizado_ton ?? 0, " ton")}
-            helper="Volume efetivamente colhido"
+            helper="Volume efetivamente executado"
           />
           <StatCard
             label="Perda media"
             value={formatNumber(report?.perda_percentual_medio ?? 0, "%")}
-            helper="Media percentual de perda"
+            helper="Leitura percentual do desvio operacional"
           />
         </div>
 
-        <div className="mt-5 flex flex-wrap gap-3">
+        <div className="mt-4 flex flex-wrap gap-2.5">
           {getExportUrl("/export/json") ? (
             <a className={secondaryButtonClassName} href={getExportUrl("/export/json") ?? "#"} target="_blank" rel="noreferrer">
-              Exportar JSON
+              Baixar JSON
             </a>
           ) : (
-            <span className={secondaryButtonClassName}>Configure NEXT_PUBLIC_API_BASE_URL</span>
+            <span className={secondaryButtonClassName}>Exportacao indisponivel neste ambiente</span>
           )}
-          {getExportUrl("/export/txt", safra) ? (
+          {getExportUrl("/export/txt", appliedSafra) ? (
             <a
               className={secondaryButtonClassName}
-              href={getExportUrl("/export/txt", safra) ?? "#"}
+              href={getExportUrl("/export/txt", appliedSafra) ?? "#"}
               target="_blank"
               rel="noreferrer"
             >
-              Exportar TXT
+              Baixar TXT
             </a>
           ) : (
-            <span className={secondaryButtonClassName}>URL da API ainda nao definida</span>
+            <span className={secondaryButtonClassName}>Canal de exportacao indisponivel neste ambiente</span>
           )}
         </div>
       </Panel>
 
-      <div className="grid gap-6 xl:grid-cols-[1.05fr_0.95fr]">
-        <Panel title="Ranking de maiores perdas" eyebrow="Safra">
+      <div className="grid items-start gap-4 xl:grid-cols-[1.05fr_0.95fr]">
+        <Panel title="Areas com maior perda" eyebrow="Prioridades">
           {report?.ranking_maiores_perdas.length ? (
-            <div className="space-y-3">
+            <div className="w-full max-w-full space-y-2.5">
               {report.ranking_maiores_perdas.map((item, index) => (
-                <article key={`${item.talhao_id}-${item.talhao_codigo}`} className="rounded-2xl border border-[color:var(--line)] bg-white/70 p-4">
+                <article key={`${item.talhao_id}-${item.talhao_codigo}`} className="rounded-[20px] border border-[color:var(--line)] bg-white/70 p-3.5">
                   <div className="flex items-start justify-between gap-4">
                     <div>
                       <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[color:var(--ember)]">
-                        Alerta {index + 1}
+                        Prioridade {index + 1}
                       </p>
                       <h3 className="mt-2 text-lg font-semibold">{item.talhao_codigo}</h3>
                       <p className="text-sm text-[color:var(--muted)]">{item.fazenda_nome}</p>
@@ -159,27 +173,43 @@ export function RelatoriosDashboard() {
                     </span>
                   </div>
                   <p className="mt-3 text-sm text-[color:var(--muted)]">
-                    Perda acumulada de {formatNumber(item.perda_ton, " ton")} para a safra consultada.
+                    Perda acumulada de {formatNumber(item.perda_ton, " ton")} na leitura atual da safra.
                   </p>
                 </article>
               ))}
             </div>
           ) : (
-            <StatusCallout tone="info" message="Ainda nao ha ranking para a safra selecionada." />
+            <StatusCallout tone="info" message="Ainda nao ha prioridades abertas para a safra selecionada." />
           )}
         </Panel>
 
-        <Panel title="Recortes por fazenda e talhao" eyebrow="Drill-down">
-          <div className="grid gap-3 md:grid-cols-2">
-            <select className="rounded-2xl border border-[color:var(--line)] bg-white/80 px-4 py-3 text-sm outline-none" value={fazendaId} onChange={(event) => setFazendaId(event.target.value)}>
-              <option value="">Selecione uma fazenda</option>
+        <Panel title="Detalhe por unidade e area" eyebrow="Drill-down">
+          <div className="grid gap-2.5 md:grid-cols-2">
+            <label htmlFor={fazendaSelectId} className="sr-only">
+              Selecionar unidade para detalhamento
+            </label>
+            <select
+              id={fazendaSelectId}
+              className="rounded-2xl border border-[color:var(--line)] bg-white/80 px-4 py-3 text-sm outline-none"
+              value={fazendaId}
+              onChange={(event) => setFazendaId(event.target.value)}
+            >
+              <option value="">Selecione uma unidade</option>
               {fazendas.map((fazenda) => (
                 <option key={fazenda.id} value={fazenda.id}>
                   {fazenda.nome}
                 </option>
               ))}
             </select>
-            <select className="rounded-2xl border border-[color:var(--line)] bg-white/80 px-4 py-3 text-sm outline-none" value={talhaoId} onChange={(event) => setTalhaoId(event.target.value)}>
+            <label htmlFor={talhaoSelectId} className="sr-only">
+              Selecionar talhao para detalhamento
+            </label>
+            <select
+              id={talhaoSelectId}
+              className="rounded-2xl border border-[color:var(--line)] bg-white/80 px-4 py-3 text-sm outline-none"
+              value={talhaoId}
+              onChange={(event) => setTalhaoId(event.target.value)}
+            >
               <option value="">Selecione um talhao</option>
               {talhoes.map((talhao) => (
                 <option key={talhao.id} value={talhao.id}>
@@ -189,35 +219,35 @@ export function RelatoriosDashboard() {
             </select>
           </div>
 
-          <div className="mt-3">
+          <div className="mt-2.5">
             <button className={secondaryButtonClassName} type="button" onClick={handleConsultar}>
-              Consultar recortes
+              Abrir detalhe
             </button>
           </div>
 
-          <div className="mt-5 space-y-4">
+          <div className="mt-4 space-y-3">
             {farmReport ? (
-              <article className="rounded-2xl border border-[color:var(--line)] bg-white/70 p-4">
+              <article className="rounded-[20px] border border-[color:var(--line)] bg-white/70 p-3.5">
                 <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[color:var(--accent)]">{farmReport.titulo}</p>
                 <h3 className="mt-2 text-xl font-semibold">{farmReport.identificador}</h3>
                 <p className="mt-3 text-sm text-[color:var(--muted)]">
-                  {farmReport.total_registros} registros | perda media de {formatNumber(farmReport.perda_percentual_medio, "%")}
+                  {farmReport.total_registros} apontamentos | perda media de {formatNumber(farmReport.perda_percentual_medio, "%")}
                 </p>
               </article>
             ) : null}
 
             {plotReport ? (
-              <article className="rounded-2xl border border-[color:var(--line)] bg-white/70 p-4">
+              <article className="rounded-[20px] border border-[color:var(--line)] bg-white/70 p-3.5">
                 <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[color:var(--ember)]">{plotReport.titulo}</p>
                 <h3 className="mt-2 text-xl font-semibold">{plotReport.identificador}</h3>
                 <p className="mt-3 text-sm text-[color:var(--muted)]">
-                  {plotReport.total_registros} registros | perda total de {formatNumber(plotReport.perda_total_ton, " ton")}
+                  {plotReport.total_registros} apontamentos | perda total de {formatNumber(plotReport.perda_total_ton, " ton")}
                 </p>
               </article>
             ) : null}
 
             {!farmReport && !plotReport ? (
-              <StatusCallout tone="info" message="Escolha uma fazenda ou um talhao para abrir o detalhe do consolidado." />
+              <StatusCallout tone="info" message="Escolha uma unidade ou area para abrir o detalhamento da leitura." />
             ) : null}
           </div>
         </Panel>

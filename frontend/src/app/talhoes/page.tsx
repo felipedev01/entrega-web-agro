@@ -1,12 +1,12 @@
 import { TalhoesManager } from "@/components/talhoes-manager";
 import { PageFrame } from "@/components/ui";
+import { pageContent } from "@/lib/content";
 
 export default function TalhoesPage() {
+  const content = pageContent.talhoes;
+
   return (
-    <PageFrame
-      title="Cadastro operacional de talhoes"
-      description="Associe cada talhao a uma fazenda, registre codigo, area e localizacao, e deixe a malha produtiva pronta para receber fechamentos de colheita."
-    >
+    <PageFrame eyebrow={content.eyebrow} title={content.title} description={content.description}>
       <TalhoesManager />
     </PageFrame>
   );

@@ -1,18 +1,30 @@
 @import "tailwindcss";
 
 :root {
-  --background: #f0eadc;
-  --foreground: #1e261d;
-  --canvas: #ebe3d1;
-  --surface: #fcfaf6;
-  --ink: #1f281e;
-  --muted: #6c7564;
-  --line: rgba(72, 88, 63, 0.14);
-  --line-strong: rgba(72, 88, 63, 0.28);
-  --accent: #3d6d43;
-  --accent-soft: rgba(61, 109, 67, 0.18);
-  --accent-contrast: #f8f3e8;
-  --ember: #8a442b;
+  --background: #eef0e9;
+  --foreground: #152016;
+  --canvas: #e4e7db;
+  --surface: rgba(251, 250, 245, 0.92);
+  --ink: #172317;
+  --muted: #66725f;
+  --line: rgba(53, 77, 52, 0.12);
+  --line-strong: rgba(53, 77, 52, 0.24);
+  --accent: #245b3c;
+  --accent-soft: rgba(36, 91, 60, 0.16);
+  --accent-contrast: #f7f4ec;
+  --ember: #9b5c35;
+  --sidebar: rgba(20, 35, 23, 0.92);
+  --sidebar-ink: #eff4ea;
+  --sidebar-line: rgba(232, 239, 229, 0.1);
+  --sidebar-nav: rgba(255, 255, 255, 0.03);
+  --sidebar-nav-hover: rgba(255, 255, 255, 0.06);
+  --sidebar-nav-ink: rgba(234, 242, 231, 0.84);
+  --sidebar-nav-border: rgba(232, 239, 229, 0.07);
+  --sidebar-active: rgba(65, 82, 71, 0.72);
+  --sidebar-active-border: rgba(216, 236, 214, 0.12);
+  --sidebar-active-ink: #fdfefb;
+  --sidebar-marker: #f2f6e8;
+  --glow: rgba(93, 126, 83, 0.18);
 }
 
 @theme inline {
@@ -23,13 +35,20 @@
 }
 
 body {
-  background: var(--background);
+  background:
+    radial-gradient(circle at top left, rgba(78, 111, 69, 0.16), transparent 22%),
+    radial-gradient(circle at bottom right, rgba(155, 92, 53, 0.1), transparent 18%),
+    linear-gradient(180deg, #f3f4ef 0%, #eef0e9 48%, #e8ebdf 100%);
   color: var(--ink);
   font-family: var(--font-space-grotesk), sans-serif;
 }
 
 * {
   box-sizing: border-box;
+}
+
+html {
+  color-scheme: light;
 }
 
 ::selection {

@@ -9,6 +9,7 @@ import type { Fazenda } from "@/lib/types";
 import { buttonClassName, inputClassName, Panel, secondaryButtonClassName, StatusCallout } from "./ui";
 
 export function FazendasManager() {
+  const nomeInputId = "fazenda-nome";
   const [fazendas, setFazendas] = useState<Fazenda[]>([]);
   const [nome, setNome] = useState("");
   const [editingId, setEditingId] = useState<number | null>(null);
@@ -20,13 +21,13 @@ export function FazendasManager() {
     try {
       setFazendas(await listFazendas());
     } catch (caughtError) {
-      setFeedback({
-        tone: "error",
-        message:
-          caughtError instanceof ApiError
-            ? caughtError.message
-            : "Nao foi possivel carregar as fazendas.",
-      });
+        setFeedback({
+          tone: "error",
+          message:
+            caughtError instanceof ApiError
+              ? caughtError.message
+              : "Nao foi possivel carregar as unidades.",
+        });
     } finally {
       setLoading(false);
     }
@@ -64,10 +65,10 @@ export function FazendasManager() {
       try {
         if (editingId) {
           await updateFazenda(editingId, { nome });
-          setFeedback({ tone: "success", message: "Fazenda atualizada com sucesso." });
+          setFeedback({ tone: "success", message: "Unidade atualizada com sucesso." });
         } else {
           await createFazenda({ nome });
-          setFeedback({ tone: "success", message: "Fazenda criada com sucesso." });
+          setFeedback({ tone: "success", message: "Unidade cadastrada com sucesso." });
         }
         resetForm();
         await refresh();
@@ -77,7 +78,7 @@ export function FazendasManager() {
           message:
             caughtError instanceof ApiError
               ? caughtError.message
-              : "Nao foi possivel salvar a fazenda.",
+              : "Nao foi possivel salvar a unidade.",
         });
       }
     });
@@ -90,14 +91,14 @@ export function FazendasManager() {
   }
 
   function handleDelete(id: number) {
-    if (!window.confirm("Deseja realmente excluir esta fazenda e os dados relacionados?")) {
+    if (!window.confirm("Deseja remover esta unidade e os dados relacionados?")) {
       return;
     }
 
     startTransition(async () => {
       try {
         await deleteFazenda(id);
-        setFeedback({ tone: "success", message: "Fazenda removida com sucesso." });
+        setFeedback({ tone: "success", message: "Unidade removida com sucesso." });
         if (editingId === id) {
           resetForm();
         }
@@ -108,31 +109,37 @@ export function FazendasManager() {
           message:
             caughtError instanceof ApiError
               ? caughtError.message
-              : "Nao foi possivel excluir a fazenda.",
+              : "Nao foi possivel remover a unidade.",
         });
       }
     });
   }
 
   return (
-    <div className="grid gap-6 xl:grid-cols-[0.9fr_1.1fr]">
-      <Panel title={editingId ? "Editar fazenda" : "Nova fazenda"} eyebrow="Formulario">
+    <div className="grid items-start gap-4 xl:grid-cols-[0.9fr_1.1fr]">
+      <Panel title={editingId ? "Editar unidade" : "Nova unidade"} eyebrow="Cadastro mestre">
         {feedback ? <StatusCallout tone={feedback.tone} message={feedback.message} /> : null}
-        <form className="mt-5 space-y-4" onSubmit={handleSubmit}>
+        <form className="mt-4 space-y-3" onSubmit={handleSubmit}>
           <div>
-            <label className="mb-2 block text-sm font-medium text-[color:var(--ink)]">Nome da fazenda</label>
+            <label
+              htmlFor={nomeInputId}
+              className="mb-1.5 block text-sm font-medium text-[color:var(--ink)]"
+            >
+              Nome da unidade
+            </label>
             <input
+              id={nomeInputId}
               value={nome}
               onChange={(event) => setNome(event.target.value)}
               className={inputClassName}
-              placeholder="Ex.: Fazenda Sao Jose"
+              placeholder="Ex.: Fazenda Santa Helena"
               required
             />
           </div>
 
-          <div className="flex flex-wrap gap-3">
+          <div className="flex flex-wrap gap-2.5">
             <button className={buttonClassName} type="submit" disabled={isPending}>
-              {editingId ? "Salvar alteracoes" : "Cadastrar fazenda"}
+              {editingId ? "Salvar alteracoes" : "Cadastrar unidade"}
             </button>
             <button
               className={secondaryButtonClassName}
@@ -146,10 +153,38 @@ export function FazendasManager() {
         </form>
       </Panel>
 
-      <Panel title="Fazendas cadastradas" eyebrow="Leitura Oracle">
-        {loading ? <StatusCallout tone="info" message="Buscando fazendas cadastradas no Oracle." /> : null}
-        <div className="overflow-x-auto">
-          <table className="min-w-full text-left text-sm">
+      <Panel title="Unidades cadastradas" eyebrow="Base operacional">
+        {loading ? <StatusCallout tone="info" message="Atualizando unidades disponiveis para a operacao." /> : null}
+        <div className="space-y-3 md:hidden">
+          {fazendas.map((fazenda) => (
+            <article
+              key={fazenda.id}
+              className="rounded-[20px] border border-[color:var(--line)] bg-white/72 p-4"
+            >
+              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[color:var(--muted)]">
+                Unidade
+              </p>
+              <h3 className="mt-2 text-lg font-semibold text-[color:var(--ink)]">{fazenda.nome}</h3>
+              <p className="mt-2 text-sm text-[color:var(--muted)]">
+                Criada em {formatDate(fazenda.created_at)}
+              </p>
+              <div className="mt-4 flex flex-wrap gap-2">
+                <button className={secondaryButtonClassName} type="button" onClick={() => handleEdit(fazenda)}>
+                  Editar
+                </button>
+                <button
+                  className={secondaryButtonClassName}
+                  type="button"
+                  onClick={() => handleDelete(fazenda.id)}
+                >
+                  Excluir
+                </button>
+              </div>
+            </article>
+          ))}
+        </div>
+        <div className="hidden w-full max-w-full overflow-x-auto md:block">
+          <table className="min-w-[560px] text-left text-sm">
             <thead className="text-[color:var(--muted)]">
               <tr>
                 <th className="pb-3 pr-4">Nome</th>
@@ -160,14 +195,18 @@ export function FazendasManager() {
             <tbody>
               {fazendas.map((fazenda) => (
                 <tr key={fazenda.id} className="border-t border-[color:var(--line)]">
-                  <td className="py-3 pr-4 font-medium">{fazenda.nome}</td>
-                  <td className="py-3 pr-4">{formatDate(fazenda.created_at)}</td>
-                  <td className="py-3">
-                    <div className="flex flex-wrap gap-2">
+                  <td className="py-2.5 pr-4 font-medium">{fazenda.nome}</td>
+                  <td className="py-2.5 pr-4">{formatDate(fazenda.created_at)}</td>
+                  <td className="py-2.5">
+                    <div className="flex flex-wrap gap-1.5">
                       <button className={secondaryButtonClassName} type="button" onClick={() => handleEdit(fazenda)}>
                         Editar
                       </button>
-                      <button className={secondaryButtonClassName} type="button" onClick={() => handleDelete(fazenda.id)}>
+                      <button
+                        className={secondaryButtonClassName}
+                        type="button"
+                        onClick={() => handleDelete(fazenda.id)}
+                      >
                         Excluir
                       </button>
                     </div>

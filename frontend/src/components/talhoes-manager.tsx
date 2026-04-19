@@ -32,6 +32,12 @@ const initialForm: TalhaoForm = {
 };
 
 export function TalhoesManager() {
+  const farmSelectId = "talhao-fazenda";
+  const codigoInputId = "talhao-codigo";
+  const nomeInputId = "talhao-nome";
+  const areaInputId = "talhao-area";
+  const localizacaoInputId = "talhao-localizacao";
+  const filterFarmId = "talhoes-filter-fazenda";
   const [fazendas, setFazendas] = useState<Fazenda[]>([]);
   const [talhoes, setTalhoes] = useState<Talhao[]>([]);
   const [filterFarm, setFilterFarm] = useState("");
@@ -50,13 +56,13 @@ export function TalhoesManager() {
       setFazendas(farms);
       setTalhoes(plots);
     } catch (caughtError) {
-      setFeedback({
-        tone: "error",
-        message:
-          caughtError instanceof ApiError
-            ? caughtError.message
-            : "Nao foi possivel carregar os talhoes.",
-      });
+        setFeedback({
+          tone: "error",
+          message:
+            caughtError instanceof ApiError
+              ? caughtError.message
+              : "Nao foi possivel carregar as areas.",
+        });
     } finally {
       setLoading(false);
     }
@@ -106,10 +112,10 @@ export function TalhoesManager() {
 
         if (editingId) {
           await updateTalhao(editingId, payload);
-          setFeedback({ tone: "success", message: "Talhao atualizado com sucesso." });
+          setFeedback({ tone: "success", message: "Area atualizada com sucesso." });
         } else {
           await createTalhao(payload);
-          setFeedback({ tone: "success", message: "Talhao criado com sucesso." });
+          setFeedback({ tone: "success", message: "Area cadastrada com sucesso." });
         }
 
         resetForm();
@@ -120,7 +126,7 @@ export function TalhoesManager() {
           message:
             caughtError instanceof ApiError
               ? caughtError.message
-              : "Nao foi possivel salvar o talhao.",
+              : "Nao foi possivel salvar a area.",
         });
       }
     });
@@ -138,14 +144,14 @@ export function TalhoesManager() {
   }
 
   function handleDelete(id: number) {
-    if (!window.confirm("Deseja realmente excluir este talhao e os fechamentos associados?")) {
+    if (!window.confirm("Deseja remover esta area e os apontamentos associados?")) {
       return;
     }
 
     startTransition(async () => {
       try {
         await deleteTalhao(id);
-        setFeedback({ tone: "success", message: "Talhao removido com sucesso." });
+        setFeedback({ tone: "success", message: "Area removida com sucesso." });
         if (editingId === id) {
           resetForm();
         }
@@ -156,7 +162,7 @@ export function TalhoesManager() {
           message:
             caughtError instanceof ApiError
               ? caughtError.message
-              : "Nao foi possivel excluir o talhao.",
+              : "Nao foi possivel remover a area.",
         });
       }
     });
@@ -167,14 +173,17 @@ export function TalhoesManager() {
   }
 
   return (
-    <div className="space-y-6">
-      <div className="grid gap-6 xl:grid-cols-[0.9fr_1.1fr]">
-        <Panel title={editingId ? "Editar talhao" : "Novo talhao"} eyebrow="Formulario">
+    <div className="space-y-5">
+      <div className="grid items-start gap-4 xl:grid-cols-[0.9fr_1.1fr]">
+        <Panel title={editingId ? "Editar area" : "Nova area"} eyebrow="Cadastro territorial">
           {feedback ? <StatusCallout tone={feedback.tone} message={feedback.message} /> : null}
-          <form className="mt-5 grid gap-4 md:grid-cols-2" onSubmit={handleSubmit}>
+          <form className="mt-4 grid gap-3 md:grid-cols-2" onSubmit={handleSubmit}>
             <div className="md:col-span-2">
-              <label className="mb-2 block text-sm font-medium">Fazenda</label>
+              <label htmlFor={farmSelectId} className="mb-1.5 block text-sm font-medium">
+                Fazenda
+              </label>
               <select
+                id={farmSelectId}
                 className={inputClassName}
                 value={form.fazenda_id}
                 onChange={(event) => updateField("fazenda_id", event.target.value)}
@@ -190,8 +199,11 @@ export function TalhoesManager() {
             </div>
 
             <div>
-              <label className="mb-2 block text-sm font-medium">Codigo</label>
+              <label htmlFor={codigoInputId} className="mb-1.5 block text-sm font-medium">
+                Codigo do talhao
+              </label>
               <input
+                id={codigoInputId}
                 className={inputClassName}
                 value={form.codigo}
                 onChange={(event) => updateField("codigo", event.target.value)}
@@ -200,8 +212,11 @@ export function TalhoesManager() {
               />
             </div>
             <div>
-              <label className="mb-2 block text-sm font-medium">Nome opcional</label>
+              <label htmlFor={nomeInputId} className="mb-1.5 block text-sm font-medium">
+                Nome de referencia
+              </label>
               <input
+                id={nomeInputId}
                 className={inputClassName}
                 value={form.nome}
                 onChange={(event) => updateField("nome", event.target.value)}
@@ -209,8 +224,11 @@ export function TalhoesManager() {
               />
             </div>
             <div>
-              <label className="mb-2 block text-sm font-medium">Area em hectares</label>
+              <label htmlFor={areaInputId} className="mb-1.5 block text-sm font-medium">
+                Area em hectares
+              </label>
               <input
+                id={areaInputId}
                 className={inputClassName}
                 type="number"
                 min="0"
@@ -221,8 +239,11 @@ export function TalhoesManager() {
               />
             </div>
             <div>
-              <label className="mb-2 block text-sm font-medium">Localizacao</label>
+              <label htmlFor={localizacaoInputId} className="mb-1.5 block text-sm font-medium">
+                Localizacao de campo
+              </label>
               <input
+                id={localizacaoInputId}
                 className={inputClassName}
                 value={form.localizacao_descricao}
                 onChange={(event) => updateField("localizacao_descricao", event.target.value)}
@@ -230,9 +251,9 @@ export function TalhoesManager() {
               />
             </div>
 
-            <div className="md:col-span-2 flex flex-wrap gap-3">
+            <div className="md:col-span-2 flex flex-wrap gap-2.5">
               <button className={buttonClassName} type="submit" disabled={isPending}>
-                {editingId ? "Salvar alteracoes" : "Cadastrar talhao"}
+                {editingId ? "Salvar alteracoes" : "Cadastrar area"}
               </button>
               <button className={secondaryButtonClassName} type="button" onClick={resetForm}>
                 Limpar formulario
@@ -242,11 +263,15 @@ export function TalhoesManager() {
         </Panel>
 
         <Panel
-          title="Mapa de talhoes"
-          eyebrow="Consulta"
+          title="Areas mapeadas"
+          eyebrow="Consulta territorial"
           actions={
             <div className="flex items-center gap-2">
+              <label htmlFor={filterFarmId} className="sr-only">
+                Filtrar areas por fazenda
+              </label>
               <select
+                id={filterFarmId}
                 className={`${inputClassName} min-w-48`}
                 value={filterFarm}
                 onChange={(event) => setFilterFarm(event.target.value)}
@@ -264,9 +289,45 @@ export function TalhoesManager() {
             </div>
           }
         >
-          {loading ? <StatusCallout tone="info" message="Buscando talhoes cadastrados no Oracle." /> : null}
-          <div className="overflow-x-auto">
-            <table className="min-w-full text-left text-sm">
+          {loading ? <StatusCallout tone="info" message="Atualizando areas mapeadas para consulta." /> : null}
+          <div className="space-y-3 md:hidden">
+            {talhoes.map((talhao) => (
+              <article
+                key={talhao.id}
+                className="rounded-[20px] border border-[color:var(--line)] bg-white/72 p-4"
+              >
+                <div className="flex items-start justify-between gap-3">
+                  <div>
+                    <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[color:var(--muted)]">
+                      Talhao
+                    </p>
+                    <h3 className="mt-2 text-lg font-semibold text-[color:var(--ink)]">{talhao.codigo}</h3>
+                    <p className="text-sm text-[color:var(--muted)]">{talhao.fazenda_nome}</p>
+                  </div>
+                  <span className="rounded-full bg-[color:var(--canvas)]/70 px-3 py-1 text-sm font-medium">
+                    {formatNumber(talhao.area_hectares, " ha")}
+                  </span>
+                </div>
+                <p className="mt-3 text-sm text-[color:var(--muted)]">
+                  {talhao.localizacao_descricao ?? "Sem detalhe"}
+                </p>
+                <div className="mt-4 flex flex-wrap gap-2">
+                  <button className={secondaryButtonClassName} type="button" onClick={() => handleEdit(talhao)}>
+                    Editar
+                  </button>
+                  <button
+                    className={secondaryButtonClassName}
+                    type="button"
+                    onClick={() => handleDelete(talhao.id)}
+                  >
+                    Excluir
+                  </button>
+                </div>
+              </article>
+            ))}
+          </div>
+          <div className="hidden w-full max-w-full overflow-x-auto md:block">
+            <table className="min-w-[720px] text-left text-sm">
               <thead className="text-[color:var(--muted)]">
                 <tr>
                   <th className="pb-3 pr-4">Talhao</th>
@@ -279,16 +340,20 @@ export function TalhoesManager() {
               <tbody>
                 {talhoes.map((talhao) => (
                   <tr key={talhao.id} className="border-t border-[color:var(--line)]">
-                    <td className="py-3 pr-4 font-medium">{talhao.codigo}</td>
-                    <td className="py-3 pr-4">{talhao.fazenda_nome}</td>
-                    <td className="py-3 pr-4">{formatNumber(talhao.area_hectares, " ha")}</td>
-                    <td className="py-3 pr-4">{talhao.localizacao_descricao ?? "Sem detalhe"}</td>
-                    <td className="py-3">
-                      <div className="flex flex-wrap gap-2">
+                    <td className="py-2.5 pr-4 font-medium">{talhao.codigo}</td>
+                    <td className="py-2.5 pr-4">{talhao.fazenda_nome}</td>
+                    <td className="py-2.5 pr-4">{formatNumber(talhao.area_hectares, " ha")}</td>
+                    <td className="py-2.5 pr-4">{talhao.localizacao_descricao ?? "Sem detalhe"}</td>
+                    <td className="py-2.5">
+                      <div className="flex flex-wrap gap-1.5">
                         <button className={secondaryButtonClassName} type="button" onClick={() => handleEdit(talhao)}>
                           Editar
                         </button>
-                        <button className={secondaryButtonClassName} type="button" onClick={() => handleDelete(talhao.id)}>
+                        <button
+                          className={secondaryButtonClassName}
+                          type="button"
+                          onClick={() => handleDelete(talhao.id)}
+                        >
                           Excluir
                         </button>
                       </div>

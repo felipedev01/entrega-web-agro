@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { IBM_Plex_Mono, Space_Grotesk } from "next/font/google";
 import { AppShell } from "@/components/app-shell";
+import { brand } from "@/lib/content";
 import "./globals.css";
 
 const spaceGrotesk = Space_Grotesk({
@@ -15,8 +16,8 @@ const ibmPlexMono = IBM_Plex_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Agro Analytics FIAP",
-  description: "Painel web para monitorar colheita de cana com API Python e Oracle real.",
+  title: brand.name,
+  description: brand.description,
 };
 
 export default function RootLayout({
