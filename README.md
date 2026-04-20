@@ -1,30 +1,113 @@
 # Agro Analytics FIAP
 
-Aplicacao web para monitorar colheita de cana-de-acucar com `Next.js + React` no front-end, `FastAPI` no backend e `Oracle` como banco principal da solucao.
+Aplicacao web para monitorar a colheita de cana-de-acucar com `Next.js + React` no front-end, `FastAPI` no backend e `Oracle` como banco principal da solucao.
 
 ## Problema de agronegocio tratado
 
-Esta entrega aborda o monitoramento operacional da colheita de cana-de-acucar. A proposta central e reduzir perda de visibilidade sobre fazendas, talhoes e registros de colheita, organizando os dados em uma solucao web com consulta, cadastro, atualizacao, remocao e relatorios de apoio a decisao.
+Esta entrega aborda o monitoramento operacional da colheita de cana-de-acucar. A proposta e reduzir a perda de visibilidade sobre fazendas, talhoes e registros de colheita, organizando os dados em uma solucao com consulta, cadastro, atualizacao, remocao e relatorios de apoio a decisao.
 
-O foco da atividade e demonstrar, em um contexto do agronegocio, o uso integrado de aplicacao Python, manipulacao de arquivos e persistencia em Oracle.
+O foco da atividade e demonstrar, em um contexto do agronegocio, o uso integrado de Python, persistencia em Oracle, validacao de entrada e apresentacao clara dos dados gerados pela solucao.
+
+## Solucao proposta
+
+O projeto foi estruturado como um MVP web com:
+
+- API Python em FastAPI
+- persistencia principal em Oracle
+- CRUD de fazendas, talhoes e registros de colheita
+- relatorios consolidados por safra, fazenda e talhao
+- interface web para operacao, consulta e exportacao
 
 ## Estrutura
 
-- `frontend/`: interface web preparada para deploy na Vercel
-- `backend/`: API Python com CRUD real no Oracle
-- `scripts/`: criacao e carga inicial do banco
+- `frontend/`: interface web preparada para demonstracao e deploy
+- `backend/`: API Python com regras de negocio e integracao Oracle
+- `scripts/`: schema e carga inicial do banco
 - `config/`: exemplos de variaveis de ambiente
-- `data/`: base JSON auxiliar para seed/export
-- `document/`: apoio documental da entrega
+- `data/`: arquivos auxiliares da entrega
+- `document/`: apoio documental da atividade
 
-## Requisitos atendidos
+## Como os requisitos da atividade aparecem neste projeto
 
-- CRUD real com Oracle
-- exportacao JSON, TXT e Excel
-- relatorios operacionais
-- separacao entre front-end web e API Python
-- uso de Python aplicado a um problema do agronegocio
-- manipulacao de arquivos texto, JSON e planilha Excel
+### 1. Problema de agronegocio e relevancia
+
+O README deixa explicito que o recorte da entrega e a colheita de cana-de-acucar e que a dor tratada e a organizacao de dados operacionais de fazendas, talhoes e perdas de colheita.
+
+### 2. Uso de Python nos capitulos 3 a 6
+
+O backend concentra a parte principal da disciplina:
+
+- `backend/app/api/`: rotas da API
+- `backend/app/services/`: regras de negocio e calculos
+- `backend/app/repositories/`: acesso ao Oracle
+- `backend/test_oracle_connection.py`: validacao minima de conexao
+- `backend/run_sql_file.py`: execucao de arquivos SQL pelo terminal
+
+### 3. Subalgoritmos com passagem de parametros
+
+O projeto utiliza funcoes e metodos com parametros em toda a camada Python. Alguns exemplos estao em:
+
+- `backend/app/services/agro_service.py`
+- `backend/app/repositories/agro_repository.py`
+- `backend/test_oracle_connection.py`
+- `backend/run_sql_file.py`
+
+### 4. Estruturas de dados
+
+Os conteudos de estruturas de dados aparecem assim no projeto:
+
+- `lista`: usada em listagens, filtros, consolidacoes e exportacoes
+- `dicionario`: usado para payloads, respostas da API e organizacao intermediaria dos dados
+- `tupla`: aparece nas linhas retornadas pelo cursor Oracle antes da normalizacao
+- `tabela de memoria`: aparece no tratamento intermediario dos dados em memoria para consolidacao de relatorios e calculo de resumos operacionais
+
+### 5. Manipulacao de arquivos e saidas da solucao
+
+O projeto evidencia:
+
+- execucao de arquivos SQL pelo Python para criacao e carga inicial do banco
+- disponibilizacao de saida em JSON, TXT e Excel pela API
+- arquivo auxiliar `data/seed_demo.json` como apoio documental da base de exemplo
+
+Observacao importante:
+
+- o Oracle continua sendo a base principal da solucao
+- JSON, TXT e Excel aparecem como saidas complementares da entrega
+
+### 6. Conexao com banco Oracle
+
+O Oracle e a persistencia principal do projeto. A entrega inclui:
+
+- configuracao por variaveis de ambiente
+- pool de conexoes
+- script minimo de teste de conexao
+- schema SQL
+- carga inicial SQL
+- endpoint de healthcheck do banco
+
+### 7. Validacao de entrada e usabilidade
+
+O projeto contempla:
+
+- validacao de entrada no backend com Pydantic e regras de negocio
+- restricoes no schema Oracle
+- formularios com campos obrigatorios, selecoes guiadas e feedback de erro no frontend
+- apresentacao limpa dos dados em cards, tabelas, dashboards e relatorios
+
+## Validacao tecnica ja executada
+
+Durante a auditoria local deste workspace, os seguintes pontos passaram:
+
+- compilacao do backend com `python -m compileall backend`
+- import das dependencias Python do projeto
+- import da aplicacao FastAPI com variaveis minimas
+- `npm run lint` no frontend
+- `npm run build` no frontend
+
+Importante:
+
+- a validacao completa com Oracle real depende das credenciais validas do ambiente FIAP
+- sem essas credenciais, a implementacao Oracle pode ser considerada preparada, mas nao totalmente comprovada end-to-end
 
 ## Como rodar o backend
 
@@ -35,8 +118,8 @@ O foco da atividade e demonstrar, em um contexto do agronegocio, o uso integrado
 pip install -r backend/requirements.txt
 ```
 
-3. Copie `config/backend.env.example` para `backend/.env` e preencha com suas credenciais Oracle fornecidas no seu ambiente FIAP.
-4. Exemplo de estrutura do arquivo:
+3. Copie `config/backend.env.example` para `backend/.env` e preencha com as credenciais Oracle do seu ambiente.
+4. Exemplo:
 
 ```env
 ORACLE_HOST=seu_host_oracle
@@ -46,20 +129,20 @@ ORACLE_USER=seu_usuario
 ORACLE_PASSWORD=sua_senha
 ```
 
-5. Valide a conexao minima com Oracle via terminal antes de subir a API:
+5. Valide a conexao minima:
 
 ```bash
 cd backend
 python test_oracle_connection.py
 ```
 
-6. Com a conexao minima validada, confirme que a API sobe sem erro:
+6. Suba a API:
 
 ```bash
 uvicorn main:app --reload --port 8010
 ```
 
-7. Depois execute o schema e a carga inicial inteiramente pelo terminal:
+7. Execute schema e carga inicial:
 
 ```bash
 python run_sql_file.py ../scripts/schema.sql
@@ -72,30 +155,6 @@ python run_sql_file.py ../scripts/seed.sql
 curl http://127.0.0.1:8010/health/db
 ```
 
-9. So depois avance para CRUD e frontend.
-
-## Ordem recomendada de validacao
-
-1. preparar `backend/.env`
-2. validar conexao minima com `python test_oracle_connection.py`
-3. subir o backend com `uvicorn main:app --reload`
-4. executar `schema.sql` e `seed.sql`
-5. validar `/health/db`
-6. validar CRUD da API
-7. validar frontend
-
-## Script minimo de conexao
-
-O arquivo `backend/test_oracle_connection.py` foi criado para validar rapidamente:
-
-- se o ambiente Python esta pronto
-- se `oracledb` esta instalado
-- se `host`, `porta` e `service` estao corretos
-- se a autenticacao com Oracle funciona antes do startup completo da API
-
-O Oracle SQL Developer pode ser usado como apoio, mas nao e obrigatorio. Todo o fluxo principal pode ser executado via terminal.
-Execute os comandos dentro da pasta `backend/`.
-
 ## Como rodar o front-end
 
 1. Copie `config/frontend.env.example` para `frontend/.env.local`.
@@ -107,7 +166,7 @@ npm install
 npm run dev
 ```
 
-Execute dentro da pasta `frontend/`.
+Execute os comandos dentro da pasta `frontend/`.
 
 ## Deploy do front na Vercel
 
@@ -115,12 +174,11 @@ Execute dentro da pasta `frontend/`.
 - definir `NEXT_PUBLIC_API_BASE_URL` com a URL publica do tunnel da API
 - manter a API Python rodando localmente durante a demonstracao
 - incluir a URL final do front em `FRONTEND_ORIGINS` no `backend/.env`
-- depois do primeiro vinculo com a Vercel, preferir `npx vercel deploy --prod --public --yes --build-env NEXT_PUBLIC_API_BASE_URL=... --env NEXT_PUBLIC_API_BASE_URL=...` dentro de `frontend/`
-- se quiser automatizar a publicacao de demo, usar `scripts/vercel-demo-deploy.ps1`
-- o passo a passo operacional completo esta em `document/vercel_frontend_deploy.md`
+- usar `scripts/vercel-demo-deploy.ps1` se quiser automatizar a publicacao da demo
+- consultar `document/vercel_frontend_deploy.md` para o passo a passo completo
 
-## Observacoes
+## Observacoes finais
 
-- A API exige Oracle real para funcionar.
-- JSON, TXT e Excel sao complementares e nao substituem o banco Oracle.
-- Nenhuma credencial real deve ser versionada no repositorio.
+- a API exige Oracle real para operar com persistencia completa
+- nenhuma credencial real deve ser versionada no repositorio
+- esta entrega foi pensada como MVP funcional e demonstravel para o Capitulo 6
