@@ -114,6 +114,10 @@ Execute dentro da pasta `frontend/`.
 - publicar apenas a pasta `frontend`
 - definir `NEXT_PUBLIC_API_BASE_URL` com a URL publica do tunnel da API
 - manter a API Python rodando localmente durante a demonstracao
+- incluir a URL final do front em `FRONTEND_ORIGINS` no `backend/.env`
+- depois do primeiro vinculo com a Vercel, preferir `npx vercel deploy --prod --public --yes --build-env NEXT_PUBLIC_API_BASE_URL=... --env NEXT_PUBLIC_API_BASE_URL=...` dentro de `frontend/`
+- se quiser automatizar a publicacao de demo, usar `scripts/vercel-demo-deploy.ps1`
+- o passo a passo operacional completo esta em `document/vercel_frontend_deploy.md`
 
 ## Observacoes
 

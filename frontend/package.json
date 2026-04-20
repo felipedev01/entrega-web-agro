@@ -6,7 +6,10 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "vercel:pull": "npx vercel pull --yes --environment=production",
+    "vercel:build": "npx vercel build --prod",
+    "vercel:deploy": "npx vercel deploy --prebuilt --prod"
   },
   "dependencies": {
     "next": "16.2.4",
