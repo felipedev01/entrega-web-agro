@@ -11,13 +11,13 @@ Foi desenvolvida uma aplicacao web com:
 - front-end em Next.js + React;
 - API em Python com FastAPI;
 - persistencia principal em Oracle;
-- exportacao complementar em JSON e TXT.
+- exportacao complementar em JSON, TXT e Excel.
 
 ## Requisitos da disciplina contemplados
 
 - funcoes e procedimentos com passagem de parametros;
 - estruturas de dados para organizacao de entidades e respostas;
-- manipulacao de arquivos JSON e TXT;
+- manipulacao de arquivos JSON, TXT e Excel;
 - conexao real com banco Oracle.
 
 ## Recorte do MVP

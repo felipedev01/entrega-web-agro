@@ -67,7 +67,7 @@ async function request<T>(path: string, init?: RequestInit, searchParams?: URLSe
   return (await response.json()) as T;
 }
 
-export function getExportUrl(path: "/export/json" | "/export/txt", safra?: string) {
+export function getExportUrl(path: "/export/json" | "/export/txt" | "/export/xlsx", safra?: string) {
   if (!apiBaseUrl) {
     return null;
   }

@@ -2,13 +2,51 @@ from __future__ import annotations
 
 from collections import defaultdict
 from datetime import date
+from io import BytesIO
 from typing import Any, Callable
 
 import oracledb
+import pandas as pd
 
 from app.core.errors import AppError
 from app.repositories.agro_repository import AgroRepository
 from app.schemas.report import FazendaResumo, RankingItem, RelatorioEntidade, RelatorioSafra
+
+
+EXPORT_COLUMNS = [
+    "id",
+    "fazenda_id",
+    "fazenda_nome",
+    "talhao_id",
+    "talhao_codigo",
+    "safra",
+    "data_fechamento",
+    "tipo_colheita",
+    "producao_prevista_ton",
+    "producao_real_ton",
+    "perda_ton",
+    "perda_percentual",
+    "equipe_responsavel",
+    "observacoes",
+    "created_at",
+    "updated_at",
+]
+
+NUMERIC_EXPORT_COLUMNS = [
+    "id",
+    "fazenda_id",
+    "talhao_id",
+    "producao_prevista_ton",
+    "producao_real_ton",
+    "perda_ton",
+    "perda_percentual",
+]
+
+DATETIME_EXPORT_COLUMNS = [
+    "data_fechamento",
+    "created_at",
+    "updated_at",
+]
 
 
 class AgroService:
@@ -159,6 +197,32 @@ class AgroService:
                 )
             )
         return "\n".join(linhas)
+
+    def export_xlsx(self) -> bytes:
+        try:
+            registros = self.repository.list_registros()
+            dataframe = pd.DataFrame.from_records(registros, columns=EXPORT_COLUMNS)
+
+            for column in NUMERIC_EXPORT_COLUMNS:
+                dataframe[column] = pd.to_numeric(dataframe[column], errors="coerce")
+
+            for column in DATETIME_EXPORT_COLUMNS:
+                dataframe[column] = pd.to_datetime(dataframe[column], errors="coerce")
+
+            buffer = BytesIO()
+            with pd.ExcelWriter(
+                buffer,
+                engine="openpyxl",
+                date_format="YYYY-MM-DD",
+                datetime_format="YYYY-MM-DD HH:MM:SS",
+            ) as writer:
+                dataframe.to_excel(writer, sheet_name="Registros", index=False)
+
+            return buffer.getvalue()
+        except AppError:
+            raise
+        except Exception as exc:
+            raise AppError("Nao foi possivel gerar o arquivo Excel do relatorio.", 500) from exc
 
     def _prepare_registro_payload(self, payload: dict[str, Any], except_id: int | None = None) -> dict[str, Any]:
         self._ensure_fazenda(payload["fazenda_id"])

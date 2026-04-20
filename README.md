@@ -20,11 +20,11 @@ O foco da atividade e demonstrar, em um contexto do agronegocio, o uso integrado
 ## Requisitos atendidos
 
 - CRUD real com Oracle
-- exportacao JSON e TXT
+- exportacao JSON, TXT e Excel
 - relatorios operacionais
 - separacao entre front-end web e API Python
 - uso de Python aplicado a um problema do agronegocio
-- manipulacao de arquivos texto e JSON
+- manipulacao de arquivos texto, JSON e planilha Excel
 
 ## Como rodar o backend
 
@@ -118,5 +118,5 @@ Execute dentro da pasta `frontend/`.
 ## Observacoes
 
 - A API exige Oracle real para funcionar.
-- JSON e TXT sao complementares e nao substituem o banco Oracle.
+- JSON, TXT e Excel sao complementares e nao substituem o banco Oracle.
 - Nenhuma credencial real deve ser versionada no repositorio.

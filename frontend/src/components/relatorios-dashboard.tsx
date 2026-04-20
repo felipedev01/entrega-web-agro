@@ -151,6 +151,18 @@ export function RelatoriosDashboard() {
           ) : (
             <span className={secondaryButtonClassName}>Canal de exportacao indisponivel neste ambiente</span>
           )}
+          {getExportUrl("/export/xlsx") ? (
+            <a
+              className={secondaryButtonClassName}
+              href={getExportUrl("/export/xlsx") ?? "#"}
+              target="_blank"
+              rel="noreferrer"
+            >
+              Baixar Excel completo
+            </a>
+          ) : (
+            <span className={secondaryButtonClassName}>Canal de exportacao indisponivel neste ambiente</span>
+          )}
         </div>
       </Panel>
 

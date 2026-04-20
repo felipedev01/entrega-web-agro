@@ -129,3 +129,13 @@ def export_txt(
     service: AgroService = Depends(get_service),
 ):
     return service.export_txt(safra)
+
+
+@router.get("/export/xlsx")
+def export_xlsx(service: AgroService = Depends(get_service)):
+    filename = "relatorio-colheita-completo.xlsx"
+    return Response(
+        content=service.export_xlsx(),
+        media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        headers={"Content-Disposition": f'attachment; filename="{filename}"'},
+    )
